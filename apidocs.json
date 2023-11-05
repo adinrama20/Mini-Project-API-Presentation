@@ -1,0 +1,461 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Mini Project API",
+    "description": "API for subject of Information System Implementation and Testing task",
+    "version": "1.0.0"
+  },
+  "_servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "localhost"
+    }
+  ],
+  "tags": [
+    {
+      "name": "User",
+      "description": "Api for user logic"
+    },
+    {
+      "name": "Book",
+      "description": "Api for book logic"
+    },
+    {
+      "name": "Cart",
+      "description": "Api for cart logic"
+    },
+    {
+      "name": "Borrow",
+      "description": "Api for borrow logic"
+    }
+  ],
+  "paths": {
+    "/api/users/{id}": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get one user by id",
+        "description": "",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "User ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Failed"
+          }
+        }
+      },
+      "put": {
+        "tags": ["User"],
+        "summary": "Update user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "User ID"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "mobile": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Failed"
+          },
+          "404": {
+            "description": "Failed"
+          },
+          "500": {
+            "description": "Failed"
+          }
+        }
+      }
+    },
+    "/api/users/register": {
+      "post": {
+        "tags": ["User"],
+        "summary": "User register",
+        "consumes": "application/json",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "mobile": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Failed"
+          }
+        }
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "tags": ["User"],
+        "summary": "User login",
+        "consumes": "application/json",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Failed"
+          },
+          "404": {
+            "description": "Failed"
+          }
+        }
+      }
+    },
+    "/api/books": {
+      "get": {
+        "tags": ["Book"],
+        "summary": "Get all books",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Book"],
+        "summary": "Added new book",
+        "consumes": "application/json",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "author": {
+                    "type": "string"
+                  },
+                  "publisher": {
+                    "type": "string"
+                  },
+                  "publicationYear": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Failed"
+          }
+        }
+      }
+    },
+    "/api/books/search": {
+      "get": {
+        "tags": ["Book"],
+        "summary": "Get all books",
+        "description": "",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "keyword",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Book keyword"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Failed"
+          }
+        }
+      }
+    },
+    "/api/carts/{id_user}": {
+      "get": {
+        "tags": ["Cart"],
+        "summary": "Show cart by user id",
+        "description": "",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id_user",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "User ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/carts/{id_user}/{id_book}": {
+      "get": {
+        "tags": ["Cart"],
+        "summary": "Show book who is borrow by user id",
+        "description": "",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id_user",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "User ID"
+          },
+          {
+            "in": "path",
+            "name": "id_book",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Book ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Cart"],
+        "summary": "Delete book from cart",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id_user",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "User ID"
+          },
+          {
+            "in": "path",
+            "name": "id_book",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Book ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Failed"
+          }
+        }
+      }
+    },
+    "/api/carts": {
+      "post": {
+        "tags": ["Cart"],
+        "summary": "Added book to cart",
+        "consumes": "application/json",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idUser": {
+                    "type": "integer"
+                  },
+                  "idBook": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Failed"
+          },
+          "404": {
+            "description": "Failed"
+          },
+          "500": {
+            "description": "Failed"
+          }
+        }
+      }
+    },
+    "/api/borrow/{id_user}": {
+      "get": {
+        "tags": ["Borrow"],
+        "summary": "Get a cart by id user",
+        "description": "",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id_user",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "User ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Failed"
+          },
+          "404": {
+            "description": "Failed"
+          },
+          "500": {
+            "description": "Failed"
+          }
+        }
+      }
+    },
+    "/api/borrow": {
+      "post": {
+        "tags": ["Borrow"],
+        "summary": "Checkout book from cart",
+        "consumes": "application/json",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idCart": {
+                    "type": "integer"
+                  },
+                  "tglPinjam": {
+                    "type": "string"
+                  },
+                  "tglKembali": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Failed"
+          },
+          "404": {
+            "description": "Failed"
+          },
+          "500": {
+            "description": "Failed"
+          }
+        }
+      }
+    }
+  }
+}
