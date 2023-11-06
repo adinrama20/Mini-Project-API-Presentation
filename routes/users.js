@@ -1,11 +1,15 @@
+require("dotenv").config();
+const { SECRET_KEY } = process.env;
 var express = require("express");
 var router = express.Router();
+const jwt = require("jsonwebtoken");
 const { User } = require("../models");
+const { verification } = require("../middleware/verification");
 const Validator = require("fastest-validator");
 
 const v = new Validator();
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", verification, async (req, res) => {
   const { id } = req.params;
 
   const findUser = await User.findByPk(id);
@@ -14,7 +18,7 @@ router.get("/:id", async (req, res) => {
     return res.status(404).json({ message: "Pengguna tidak ditemukan" });
   }
 
-  res.status(200).json({ findUser });
+  res.status(200).json({ findUser, user: req.decoded });
 });
 
 router.post("/register", async (req, res) => {
@@ -36,13 +40,13 @@ router.post("/register", async (req, res) => {
     where: { email: req.body.email },
   });
 
-  // const findMobile = await User.findOne({
-  //   where: { mobile: req.body.mobile },
-  // });
+  const findMobile = await User.findOne({
+    where: { mobile: req.body.mobile },
+  });
 
-  if (findEmail) {
+  if (findEmail || findMobile) {
     return res.status(400).json({
-      message: "Email already exists",
+      message: "Email or mobile already exists",
       status: "Failed",
     });
   }
@@ -57,7 +61,7 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   const input = {
-    email: "string",
+    email: "string|email",
     password: "string",
   };
 
@@ -67,19 +71,22 @@ router.post("/login", async (req, res) => {
     return res.status(400).json(validate);
   }
 
-  const findEmail = await User.findOne({
-    where: { email: req.body.email },
+  const findUser = await User.findOne({
+    where: { email: req.body.email, password: req.body.password },
   });
 
-  const findPassword = await User.findOne({
-    where: { password: req.body.password },
-  });
+  if (findUser) {
+    findUser.token = jwt.sign({ email: input.email }, SECRET_KEY, {
+      expiresIn: "1h",
+    });
 
-  if (findEmail && findPassword) {
+    await findUser.update(findUser.token);
+
     return res.status(200).json({
       message: "Successfully login",
       status: "Success",
       id: findEmail.id,
+      token: findUser.token,
     });
   }
 
