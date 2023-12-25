@@ -2,26 +2,27 @@ require("dotenv").config();
 const { SECRET_KEY } = process.env;
 const jwt = require("jsonwebtoken");
 
-const verifyToken = (req, res, next) => {
-  const token = req.headers.authorization;
+function verification(req, res, next) {
+  const authHeader = req.headers.authorization;
 
-  if (token) {
-    jwt.verify(token, SECRET_KEY, (err, decoded) => {
+  if (authHeader) {
+    console.log(authHeader);
+    const token = authHeader.split(" ")[1];
+
+    jwt.verify(token, SECRET_KEY, (err, data) => {
       if (err) {
         return res.status(403).json({
-          message: "Invalid token",
-          status: "Failed",
+          message: "Invalid Token !!!",
         });
       }
-      req.decoded = decoded;
+      req.data = data;
       next();
     });
   } else {
-    return res.status(401).json({
-      message: "No token provided",
-      status: "Failed",
+    return res.status(403).json({
+      message: "Invalid or Expired Token !!!",
     });
   }
-};
+}
 
-module.exports = verifyToken;
+module.exports = verification;

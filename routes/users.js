@@ -4,7 +4,7 @@ var express = require("express");
 var router = express.Router();
 const jwt = require("jsonwebtoken");
 const { User } = require("../models");
-const { verification } = require("../middleware/verification");
+const verification = require("../middleware/verification");
 const Validator = require("fastest-validator");
 
 const v = new Validator();
@@ -18,7 +18,7 @@ router.get("/:id", verification, async (req, res) => {
     return res.status(404).json({ message: "Pengguna tidak ditemukan" });
   }
 
-  res.status(200).json({ findUser, user: req.decoded });
+  res.status(200).json({ findUser });
 });
 
 router.post("/register", async (req, res) => {
@@ -61,7 +61,7 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   const input = {
-    email: "string|email",
+    email: "string",
     password: "string",
   };
 
@@ -76,16 +76,16 @@ router.post("/login", async (req, res) => {
   });
 
   if (findUser) {
-    findUser.token = jwt.sign({ email: input.email }, SECRET_KEY, {
-      expiresIn: "1h",
-    });
-
-    await findUser.update(findUser.token);
+    findUser.token = jwt.sign(
+      { id: findUser.id, email: findUser.email },
+      SECRET_KEY,
+      { expiresIn: "90s" }
+    );
 
     return res.status(200).json({
       message: "Successfully login",
       status: "Success",
-      id: findEmail.id,
+      id: findUser.id,
       token: findUser.token,
     });
   }
@@ -96,7 +96,7 @@ router.post("/login", async (req, res) => {
   });
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", verification, async (req, res) => {
   const { id } = req.params;
 
   const schema = {
